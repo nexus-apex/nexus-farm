@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} FarmField | NexusFarm{% endblock %}
+{% block page_title %}{% if editing %}Edit FarmField{% else %}New FarmField{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" name="location" value="{{ record.location|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Area Acres</label>
+        <input type="number" step="0.01" name="area_acres" value="{{ record.area_acres|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Soil Type</label>
+        <select name="soil_type">
+          <option value="clay" {% if record.soil_type == 'clay' %}selected{% endif %}>Clay</option>
+          <option value="sandy" {% if record.soil_type == 'sandy' %}selected{% endif %}>Sandy</option>
+          <option value="loam" {% if record.soil_type == 'loam' %}selected{% endif %}>Loam</option>
+          <option value="silt" {% if record.soil_type == 'silt' %}selected{% endif %}>Silt</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Irrigation</label>
+        <select name="irrigation">
+          <option value="drip" {% if record.irrigation == 'drip' %}selected{% endif %}>Drip</option>
+          <option value="sprinkler" {% if record.irrigation == 'sprinkler' %}selected{% endif %}>Sprinkler</option>
+          <option value="flood" {% if record.irrigation == 'flood' %}selected{% endif %}>Flood</option>
+          <option value="rainfed" {% if record.irrigation == 'rainfed' %}selected{% endif %}>Rainfed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="active" {% if record.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="fallow" {% if record.status == 'fallow' %}selected{% endif %}>Fallow</option>
+          <option value="preparing" {% if record.status == 'preparing' %}selected{% endif %}>Preparing</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Current Crop</label>
+        <input type="text" name="current_crop" value="{{ record.current_crop|default:'' }}">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} FarmField</button>
+      <a href="/farmfields/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

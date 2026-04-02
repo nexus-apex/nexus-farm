@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NexusFarm{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Crops</div>
+    <div class="stat-value">{{ crop_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Farmfields</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;background-clip:text">{{ farmfield_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Harvests</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text">{{ harvest_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Area Acres</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#ef4444,#ec4899);-webkit-background-clip:text;background-clip:text">{{ crop_total_area_acres|floatformat:0 }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h3>Recent Crops</h3>
+    <a href="/crops/create/" class="btn btn-primary btn-sm">+ New Crop</a>
+  </div>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Variety</th><th>Field Name</th><th>Area Acres</th><th>Planted Date</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td><a href="/crops/{{ r.pk }}/edit/">{{ r.name }}</a></td>
+        <td>{{ r.variety|default:"-" }}</td><td>{{ r.field_name|default:"-" }}</td><td>{{ r.area_acres|floatformat:2 }}</td><td style="color:var(--muted)">{{ r.planted_date|date:"M d, Y"|default:"-" }}</td><td style="color:var(--muted)">{{ r.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No records yet.</p>
+    <a href="/crops/create/" class="btn btn-primary" style="margin-top:1rem">Create First Crop</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Farmfields | NexusFarm{% endblock %}
+{% block page_title %}Farmfields{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search farmfields...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Soil Type</option>
+      <option value="clay" {% if status_filter == 'clay' %}selected{% endif %}>Clay</option>
+      <option value="sandy" {% if status_filter == 'sandy' %}selected{% endif %}>Sandy</option>
+      <option value="loam" {% if status_filter == 'loam' %}selected{% endif %}>Loam</option>
+      <option value="silt" {% if status_filter == 'silt' %}selected{% endif %}>Silt</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/farmfields/create/" class="btn btn-primary">+ New FarmField</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Location</th><th>Area Acres</th><th>Soil Type</th><th>Irrigation</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/farmfields/{{ r.pk }}/edit/"><strong>{{ r.name }}</strong></a></td>
+        <td>{{ r.location|default:"-" }}</td>
+        <td>{{ r.area_acres|floatformat:2 }}</td>
+        <td><span class="badge badge-blue">{{ r.get_soil_type_display }}</span></td>
+        <td><span class="badge badge-blue">{{ r.get_irrigation_display }}</span></td>
+        <td class="actions">
+          <a href="/farmfields/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/farmfields/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No farmfields found.</p>
+    <a href="/farmfields/create/" class="btn btn-primary" style="margin-top:1rem">Create FarmField</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

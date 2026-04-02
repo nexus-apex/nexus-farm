@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Harvests | NexusFarm{% endblock %}
+{% block page_title %}Harvests{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search harvests...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Quality Grade</option>
+      <option value="a" {% if status_filter == 'a' %}selected{% endif %}>A</option>
+      <option value="b" {% if status_filter == 'b' %}selected{% endif %}>B</option>
+      <option value="c" {% if status_filter == 'c' %}selected{% endif %}>C</option>
+      <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/harvests/create/" class="btn btn-primary">+ New Harvest</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Crop Name</th><th>Field Name</th><th>Quantity Kg</th><th>Quality Grade</th><th>Harvest Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/harvests/{{ r.pk }}/edit/"><strong>{{ r.crop_name }}</strong></a></td>
+        <td>{{ r.field_name|default:"-" }}</td>
+        <td>{{ r.quantity_kg|floatformat:2 }}</td>
+        <td><span class="badge badge-blue">{{ r.get_quality_grade_display }}</span></td>
+        <td style="color:var(--muted)">{{ r.harvest_date|date:"M d, Y"|default:"-" }}</td>
+        <td class="actions">
+          <a href="/harvests/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/harvests/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No harvests found.</p>
+    <a href="/harvests/create/" class="btn btn-primary" style="margin-top:1rem">Create Harvest</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

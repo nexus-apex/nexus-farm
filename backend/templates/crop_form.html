@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Crop | NexusFarm{% endblock %}
+{% block page_title %}{% if editing %}Edit Crop{% else %}New Crop{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Variety</label>
+        <input type="text" name="variety" value="{{ record.variety|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Field Name</label>
+        <input type="text" name="field_name" value="{{ record.field_name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Area Acres</label>
+        <input type="number" step="0.01" name="area_acres" value="{{ record.area_acres|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Planted Date</label>
+        <input type="date" name="planted_date" value="{{ record.planted_date|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Expected Harvest</label>
+        <input type="date" name="expected_harvest" value="{{ record.expected_harvest|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="planted" {% if record.status == 'planted' %}selected{% endif %}>Planted</option>
+          <option value="growing" {% if record.status == 'growing' %}selected{% endif %}>Growing</option>
+          <option value="ready" {% if record.status == 'ready' %}selected{% endif %}>Ready</option>
+          <option value="harvested" {% if record.status == 'harvested' %}selected{% endif %}>Harvested</option>
+          <option value="failed" {% if record.status == 'failed' %}selected{% endif %}>Failed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Estimated Yield</label>
+        <input type="number" step="0.01" name="estimated_yield" value="{{ record.estimated_yield|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea name="notes">{{ record.notes|default:'' }}</textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Crop</button>
+      <a href="/crops/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
